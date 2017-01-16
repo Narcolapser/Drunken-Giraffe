@@ -14,11 +14,11 @@ import time
 class DrunkenGiraffe(BoxLayout):
 	drink_list = ListProperty([])
 	drinks = []
-	pending_drink_quantity = NumericProperty(48)
+	pending_drink_quantity = NumericProperty(12)
 	pending_drink_ABV = NumericProperty(8)
 	gender = StringProperty('Male')
 	mass_units = StringProperty('lb')
-	mass = NumericProperty(300)
+	mass = NumericProperty(200)
 	mass_ins = ObjectProperty(None)
 	safety_switch = ObjectProperty(None)
 	session_start_time = time.localtime()
@@ -79,6 +79,10 @@ class DrunkenGiraffe(BoxLayout):
 			self.safety_switch.active = False
 			self.session_start_time = time.localtime()
 			self.session_start_time_str = time.strftime("%H:%M:%S",self.session_start_time)
+			while len(self.drinks):
+				self.drinks.pop()
+			while len(self.drink_list):
+				self.drink_list.pop()
 
 	def update(self,*args):
 		total = 0
@@ -94,7 +98,6 @@ class Drink():
 		self.quantity = quantity
 		self.ABV = ABV
 		self.grams_alcohol = (quantity * (ABV/100.0)) * 23.35
-#		print('ABV: {0}, oz: {1}, grams: {2}'.format(ABV,quantity,self.grams_alcohol))
 		self.at_time = at_time
 
 	def getCurrent(self):
@@ -105,10 +108,9 @@ class Drink():
 		else:
 			R = 0.68
 		H = (time.mktime(time.localtime()) - time.mktime(self.at_time)) / 3600
-#		print('A: {0}, W: {1}, R: {2}, H: {3}'.format(A,W,R,H))
 		BAC = (((A)/(W*R))*100)-(H*.015)
 		val = str(BAC)
-		val = float(val[:5])
+		val = float(val[:7])
 		return val
 	
 
@@ -117,5 +119,11 @@ class DrunkenGiraffeApp(App):
 		self.DrunkenGiraffe = DrunkenGiraffe()
 		Clock.schedule_interval(self.DrunkenGiraffe.update,1)
 		return self.DrunkenGiraffe
+
+	def on_pause(self):
+		return True
+
+	def on_resume(self):
+		pass
 
 DrunkenGiraffeApp().run()
