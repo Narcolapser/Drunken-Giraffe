@@ -1,0 +1,94 @@
+
+#:import lv kivy.uix.listview
+#:import la kivy.adapters.listadapter
+
+<DrunkenGiraffe>:
+    mass_ins: mass_ins
+    safety_switch: safety_switch
+    BoxLayout:
+        orientation: 'vertical'
+        ListView:
+            adapter:
+                la.ListAdapter(
+                data=root.drink_list,
+                selection_mode='single',
+                allow_empty_selection=True,
+                cls=lv.ListItemLabel )
+        Label:
+            size_hint_y: None
+            height: 50
+            text:'Estimated Blood Alcohol:'
+        Label:
+            size_hint_y: None
+            height: 100
+            text:str(root.BAC)
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    text: 'Session started at:'
+                Label:
+                    text: root.session_start_time_str
+            Switch:
+                id: safety_switch
+            Button:
+                text: 'Start new\\nsession'
+                on_release: root.start_new_session()
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            Label:
+                text: 'Gender'
+            ToggleButton:
+                text: root.gender
+                on_release: root.gender_swap()
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            Label:
+                size_hint_x: 0.5
+                text: 'Weight:'
+            TextInput:
+                id: mass_ins
+                size_hint_x:0.4
+                text: str(root.mass)
+                on_text: root.mass_update()
+            ToggleButton:
+                size_hint_x:0.1
+                text: root.mass_units
+                on_release: root.mass_swap()
+        BoxLayout:
+            BoxLayout:
+                orientation: 'vertical'
+                Button:
+                    text: '^^^'
+                    on_release: root.ABVUp()
+                BoxLayout:
+                    Label:
+                        text: str(root.pending_drink_ABV)
+                    Label:
+                        text: 'ABV'
+                Button:
+                    text: 'vvv'
+                    on_release: root.ABVDown()
+            BoxLayout:
+                orientation: 'vertical'
+                Button:
+                    text: '^^^'
+                    on_release: root.QuantityUp()
+                BoxLayout:
+                    Label:
+                        text: str(root.pending_drink_quantity)
+                    Label:
+                        text: 'oz'
+                Button:
+                    text: 'vvv'
+                    on_release: root.QuantityDown()
+        Label:
+            size_hint_y: None
+            height: 50
+        Button:
+            text:'DRINK'
+            on_release: root.addItem()
