@@ -1,98 +1,127 @@
-
+#:kivy 1.9.1
+#:include Carousel_Selector.kv
 #:import lv kivy.uix.listview
 #:import la kivy.adapters.listadapter
 
 <DrunkenGiraffe>:
 	mass_ins: mass_ins
-	safety_switch: safety_switch
+	abv_selector: abv_selector
+	oz_selector: oz_selector
+	drinks_pane: drinks_pane
+	drink_list: drink_list
 	BoxLayout:
-		orientation: 'vertical'
-		ListView:
-			adapter:
-				la.ListAdapter(
-				data=root.drink_list,
-				selection_mode='single',
-				allow_empty_selection=True,
-				cls=lv.ListItemLabel )
-		Label:
-			size_hint_y: None
-			height: 50
-			text:'Estimated Blood Alcohol:'
-		Label:
-			size_hint_y: None
-			height: 100
-			text: str(root.BAC)
-	BoxLayout:
+		height: root.height - 50
+		size_hint_y: None
 		orientation: 'vertical'
 		BoxLayout:
-			BoxLayout:
-				orientation: 'vertical'
-				Label:
-					text: 'Session started at:'
-				Label:
-					text: root.session_start_time_str
-			BoxLayout:
-				orientation: 'vertical'
-				Label:
-					text: 'Safety'
-				Switch:
-					id: safety_switch
-			Button:
-				text: 'New Session'
-				on_release: root.start_new_session()
-		BoxLayout:
-			size_hint_y: None
-			height: 50
+			size_hint_y: 0.1
 			Label:
 				text: 'Gender'
 			ToggleButton:
 				text: root.gender
 				on_release: root.gender_swap()
 		BoxLayout:
-			size_hint_y: None
-			height: 50
+			size_hint_y: 0.1
 			Label:
 				size_hint_x: 0.5
 				text: 'Weight:'
 			TextInput:
 				id: mass_ins
-				size_hint_x:0.4
+				size_hint_x: 0.4
 				text: str(root.mass)
 				on_text: root.mass_update()
 			ToggleButton:
-				size_hint_x:0.1
+				size_hint_x: 0.1
 				text: root.mass_units
 				on_release: root.mass_swap()
 		BoxLayout:
-			BoxLayout:
-				orientation: 'vertical'
-				Button:
-					text: '^^^'
-					on_release: root.ABVUp()
-				BoxLayout:
-					Label:
-						text: str(root.pending_drink_ABV)
-					Label:
-						text: 'ABV'
-				Button:
-					text: 'vvv'
-					on_release: root.ABVDown()
-			BoxLayout:
-				orientation: 'vertical'
-				Button:
-					text: '^^^'
-					on_release: root.QuantityUp()
-				BoxLayout:
-					Label:
-						text: str(root.pending_drink_quantity)
-					Label:
-						text: 'oz'
-				Button:
-					text: 'vvv'
-					on_release: root.QuantityDown()
+			size_hint_y: 0.3
+			orientation: 'vertical'
+			Label:
+				size_hint_y:
+				size_hint_y: 0.5
+				text: "Drink Name:"
+			TextInput:
+				id: drink_name
+				size_hint_y: 0.5
+				multiline: False
+				text: str(root.dname)
+				on_text: root.name_update()
+		BoxLayout:
+			size_hint_y: 0.2
+			Carousel_Selector:
+				id: abv_selector
+				text: "ABV:"
+			Carousel_Selector:
+				id: oz_selector
+				text: "oz:"
+		Label:
+			size_hint_y: 0.1
+		Button:
+			size_hint_y: 0.3
+			text:'DRINK'
+			on_release: root.addItem()
 		Label:
 			size_hint_y: None
 			height: 50
+			text: 'Estimated Blood Alcohol:'
+		Label:
+			size_hint_y: None
+			height: 100
+			font_size: 100
+			text: str(root.BAC)
+	BoxLayout:
+		canvas:
+			Color:
+				rgba: 0.15,0.15,0.15,0.9
+			Rectangle:
+				pos: self.pos
+				size: self.size
+		id: drinks_pane
+		pos: (0,root.height - 50)
+		orientation: 'vertical'
+		Label:
+			height: 150
+			size_hint_y: None
+		BoxLayout:
+			size_hint_y: None
+			height: 50
+			BoxLayout:
+				orientation: 'vertical'
+				Label:
+					text: 'Session started at:'
+				Label:
+					text: root.session_start_time_str
+			Button:
+				text: 'New Session'
+				on_release: root.start_new_session()
+		DrinkList:
+			id: drink_list
+
 		Button:
-			text:'DRINK'
-			on_release: root.addItem()
+			size_hint_y: None
+			height: 50
+			text: "Drink List"
+			on_release: root.toggle_drinks()
+
+<DrinkList>:
+	drink_grid: drink_grid
+	GridLayout:
+		cols: 1
+		size_hint_y: None
+		height: self.minimum_height
+		id: drink_grid
+
+<DrinkLabel>:
+	orientation: 'vertical'
+	size_hint_y: None
+	height: 100
+	Label:
+		text: root.label_text
+	BoxLayout:
+		Button:
+			text: "edit"
+			on_release: root.edit_drink()
+		Button:
+			text: "delete"
+			on_release: root.delete_drink()
