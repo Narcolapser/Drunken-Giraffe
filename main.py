@@ -1,3 +1,8 @@
+import kivy
+kivy.require('1.9.1')
+from kivy.core.window import Window
+Window.softinput_mode = 'pan'
+
 from kivy.properties import ListProperty, StringProperty, NumericProperty, ObjectProperty
 from kivy.adapters.listadapter import ListAdapter
 from kivy.animation import Animation
@@ -11,18 +16,22 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.uix.carousel import Carousel
+from kivy.uix.modalview import ModalView
 
 from kivy.lang import Builder
 from kivy.app import App
 from kivy.clock import Clock
 
 from Carousel_Selector import Carousel_Selector
+from Model import Drink
+import Model
 
 import time
 
 class DrunkenGiraffe(FloatLayout):
 	drinks = []
 	drinks_up = True
+	dirty_records = False
 	
 	pending_drink_quantity = NumericProperty(12)
 	pending_drink_ABV = NumericProperty(8)
@@ -41,7 +50,10 @@ class DrunkenGiraffe(FloatLayout):
 	session_start_time = time.localtime()
 	session_start_time_str = StringProperty(time.strftime("%H:%M:%S",time.localtime()))
 	BAC = NumericProperty(0)
-	
+
+	def __init__(self,data_dir,**kwargs):
+		self.data_dir = data_dir
+		super(DrunkenGiraffe,self).__init__(**kwargs)
 
 	def addItem(self):
 		if self.mass_units == 'lb':
@@ -63,6 +75,7 @@ class DrunkenGiraffe(FloatLayout):
 				name)
 		self.drinks.append(drink)
 		self.drink_list.append(drink)
+		self.dirty_records = True
 
 	def ABVUp(self):
 		self.pending_drink_ABV+=1
@@ -106,6 +119,7 @@ class DrunkenGiraffe(FloatLayout):
 		while len(self.drinks):
 			self.drinks.pop()
 		self.drink_list.clear()
+		self.dirty_records = True
 
 	def update(self,*args):
 		total = 0
@@ -114,6 +128,10 @@ class DrunkenGiraffe(FloatLayout):
 				total += drink.getCurrent()
 
 		self.BAC = total
+		
+		if self.dirty_records:
+			self.save
+			self.dirty_records = False
 	
 	def toggle_drinks(self):
 		if self.drinks_up:
@@ -124,43 +142,10 @@ class DrunkenGiraffe(FloatLayout):
 			anim = Animation(y = self.height - 50, t='out_elastic')
 			anim.start(self.drinks_pane)
 			self.drinks_up = True
-		
-
-class Drink():
-	def __init__(self,mass,gender,quantity,ABV,at_time,name):
-		self.name = name
-		self.mass = mass
-		self.gender = gender
-		self.quantity = quantity
-		self.ABV = ABV
-		self.grams_alcohol = (quantity * (ABV/100.0)) * 23.35
-		self.at_time = at_time
-		self.removed = False
-
-	def getCurrent(self):
-		A = self.grams_alcohol
-		W = self.mass
-		if self.gender == 'Female':
-			R = 0.55
-		else:
-			R = 0.68
-		H = (time.mktime(time.localtime()) - time.mktime(self.at_time)) / 3600
-		BAC = (((A)/(W*R))*100)-(H*.015)
-		val = str(BAC)
-		try:
-			val = float(val[:7])
-		except:
-			val = 0
-		if val < 0:
-			return 0
-		return val
 	
-	def __str__(self):
-		return "{0} oz. of \"{3}\" at {1}% ABV added {2} to your BAC.".format(
-			self.quantity,
-			self.ABV,
-			self.getCurrent(),
-			self.name)
+	def save(self):
+		#call to db with self.session_start_time and self.drinks
+		Model.save(self.session_start_time,self,drinks,self.data_dir)
 
 class DrinkLabel(BoxLayout):
 	label_text = StringProperty("loading...")
@@ -171,13 +156,60 @@ class DrinkLabel(BoxLayout):
 		self.label_text = str(drink)
 		
 	def edit_drink(self):
-		print("editing!")
+		de = DrinkEditor(self.drink,self)
+		de.open()
 	
 	def delete_drink(self):
-		print("deleting!")
 		self.dlist.drink_grid.remove_widget(self)
 		self.drink.removed = True
+	
+	def update(self):
+		self.label_text = str(self.drink)
+
+class DrinkEditor(ModalView):
+	name = StringProperty("loading")
+	abv = StringProperty("loading")
+	oz = StringProperty("loading")
+	at_time = StringProperty("loading")
+	name_box = ObjectProperty(None)
+	abv_box = ObjectProperty(None)
+	oz_box = ObjectProperty(None)
+	at_box = ObjectProperty(None)
+	def __init__(self,drink,drink_label,**kwargs):
+		super(DrinkEditor,self).__init__(**kwargs)
+		self.drink = drink
+		self.drink_label = drink_label
+		self.name = str(drink.name)
+		self.oz = str(drink.quantity)
+		self.abv = str(drink.ABV)
+		self.at_time = time.strftime("%Y/%m/%d %H:%M:%S",drink.at_time)
+	
+	def save(self):
+		try:
+			self.drink.name = self.name_box.text
+		except:
+			print("Error updating name")
 		
+		try:
+			self.drink.ABV = float(self.abv_box.text)
+		except:
+			print("Error updating ABV")
+		
+		try:
+			self.drink.quantity = float(self.oz_box.text)
+		except:
+			print("Error updating OZ")
+		
+		try:
+			self.drink.at_time = time.strptime(self.at_box.text,"%Y/%m/%d %H:%M:%S")
+		except Exception as e:
+			print("Error updating time:", e)
+		
+		try:
+			self.drink_label.update()
+		except:
+			pass
+		self.dismiss()
 
 class DrinkList(ScrollView):
 	drinks = []
@@ -195,9 +227,12 @@ class DrinkList(ScrollView):
 		drinks = []
 
 
+
 class DrunkenGiraffeApp(App):
 	def build(self):
-		self.DrunkenGiraffe = DrunkenGiraffe()
+		data_dir = getattr(self, 'user_data_dir')
+		print(data_dir)
+		self.DrunkenGiraffe = DrunkenGiraffe(data_dir)
 		Clock.schedule_interval(self.DrunkenGiraffe.update,1)
 		return self.DrunkenGiraffe
 

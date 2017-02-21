@@ -117,6 +117,9 @@
 	size_hint_y: None
 	height: 100
 	Label:
+		text_size: root.width, None
+		size: self.texture_size
+		halaign: 'center'
 		text: root.label_text
 	BoxLayout:
 		Button:
@@ -125,3 +128,36 @@
 		Button:
 			text: "delete"
 			on_release: root.delete_drink()
+
+<DrinkEditor>:
+	name_box: name_box
+	abv_box: abv_box
+	oz_box: oz_box
+	at_box: at_box
+	BoxLayout:
+		orientation: 'vertical'
+		Label:
+			text: "Drink name:"
+		TextInput:
+			id: name_box
+			text: root.name
+		Label:
+			text: "ABV: "
+		TextInput:
+			id: abv_box
+			text: root.abv
+		Label:
+			text: "Oz.s consumed:"
+		TextInput:
+			id: oz_box
+			text: root.oz
+		Label:
+			text: "at time:"
+		TextInput:
+			id: at_box
+			text: root.at_time
+		Button:
+			text: "Save"
+			on_release: root.save()
+
+
