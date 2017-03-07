@@ -49,6 +49,7 @@ class DrunkenGiraffe(FloatLayout):
 	
 	session_start_time = time.localtime()
 	session_start_time_str = StringProperty(time.strftime("%H:%M:%S",time.localtime()))
+	last_drink = time.strftime("%H:%M:%S",time.localtime())
 	BAC = NumericProperty(0)
 
 	def __init__(self,data_dir,**kwargs):
@@ -56,6 +57,11 @@ class DrunkenGiraffe(FloatLayout):
 		super(DrunkenGiraffe,self).__init__(**kwargs)
 
 	def addItem(self):
+		if self.last_drink == time.strftime("%H:%M:%S",time.localtime()):
+			print("double tap. skipping")
+			return None
+		self.last_drink = time.strftime("%H:%M:%S",time.localtime())
+		
 		if self.mass_units == 'lb':
 			mass = self.mass / 2.2 * 1000
 		else:
@@ -130,7 +136,7 @@ class DrunkenGiraffe(FloatLayout):
 		self.BAC = total
 		
 		if self.dirty_records:
-			self.save
+			self.save()
 			self.dirty_records = False
 	
 	def toggle_drinks(self):
@@ -145,7 +151,17 @@ class DrunkenGiraffe(FloatLayout):
 	
 	def save(self):
 		#call to db with self.session_start_time and self.drinks
-		Model.save(self.session_start_time,self,drinks,self.data_dir)
+		Model.save(self.session_start_time,self.drinks,self.data_dir)
+	
+	def load_last(self):
+		sid,self.drinks = Model.load_last(self.data_dir)
+		if sid:
+			self.session_start_time = time.strptime(str(sid),"%Y%m%d%H%M%S")
+			self.session_start_time_str = time.strftime("%H:%M:%S",self.session_start_time)
+			for drink in self.drinks:
+				self.drink_list.append(drink)
+		
+
 
 class DrinkLabel(BoxLayout):
 	label_text = StringProperty("loading...")
@@ -216,6 +232,7 @@ class DrinkList(ScrollView):
 	drink_grid = ObjectProperty(None)
 	
 	def append(self,val):
+		print("Appending:",val)
 		self.drinks.append(val)
 		try:
 			self.drink_grid.add_widget(DrinkLabel(val,self))
@@ -234,6 +251,7 @@ class DrunkenGiraffeApp(App):
 		print(data_dir)
 		self.DrunkenGiraffe = DrunkenGiraffe(data_dir)
 		Clock.schedule_interval(self.DrunkenGiraffe.update,1)
+		self.DrunkenGiraffe.load_last()
 		return self.DrunkenGiraffe
 
 	def on_pause(self):
