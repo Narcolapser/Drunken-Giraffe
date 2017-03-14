@@ -28,6 +28,7 @@ class Drink():
 			val = 0
 		if val < 0:
 			return 0
+		val = round(val*1000)/1000.0
 		return val
 	
 	def getInitial(self):
@@ -40,6 +41,7 @@ class Drink():
 			R = 0.68
 		H = (time.mktime(time.localtime()) - time.mktime(self.at_time)) / 3600
 		BAC = (((A)/(W*R))*100)
+		BAC = round(BAC*1000)/1000.0
 		return BAC
 	
 	

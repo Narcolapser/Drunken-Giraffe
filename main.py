@@ -39,7 +39,7 @@ class DrunkenGiraffe(FloatLayout):
 	gender = StringProperty('Male')
 	mass_units = StringProperty('lb')
 	mass = NumericProperty(200)
-	dname = StringProperty("Brewtacular!")
+	dname = StringProperty("Sunny Honey Pale Ale!")
 	
 	drink_list = ObjectProperty(None)
 	mass_ins = ObjectProperty(None)
@@ -165,12 +165,18 @@ class DrunkenGiraffe(FloatLayout):
 
 
 class DrinkLabel(BoxLayout):
-	label_text = StringProperty("loading...")
+	name = StringProperty("")
+	abv = StringProperty("")
+	oz = StringProperty("")
+	date = StringProperty("")
+	bac = StringProperty("")
+
 	def __init__(self,drink, dlist, **kwargs):
 		super(DrinkLabel,self).__init__(**kwargs)
 		self.drink = drink
 		self.dlist = dlist
 		self.label_text = str(drink)
+		self.update()
 		
 	def edit_drink(self):
 		de = DrinkEditor(self.drink,self)
@@ -181,7 +187,13 @@ class DrinkLabel(BoxLayout):
 		self.drink.removed = True
 	
 	def update(self):
-		self.label_text = str(self.drink)
+		self.name = str(self.drink.name)
+#		self.name = str(self.drink)
+		self.abv = str(self.drink.ABV)
+		self.oz = str(self.drink.quantity)
+		self.date = str(self.drink.at_time)
+		self.bac = str(self.drink.getInitial())
+
 
 class DrinkEditor(ModalView):
 	name = StringProperty("loading")

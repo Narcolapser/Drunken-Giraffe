@@ -29,4 +29,10 @@ class ScrollSelector(BoxLayout):
 	
 	def major_update(self):
 		self.val = 100 - round(self.sv.scroll_y * 100)
-
+		
+	def do_layout(self, *largs):
+		print("pre Height:",self.height)
+		for l in self.sv.children[0].children:
+			l.height = self.height
+		super(ScrollSelector,self).do_layout(*largs)
+		print("post Height:",self.height)

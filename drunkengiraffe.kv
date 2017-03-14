@@ -50,12 +50,6 @@
 				on_text: root.name_update()
 		BoxLayout:
 			size_hint_y: 0.2
-#			Carousel_Selector:
-#				id: abv_selector
-#				text: "ABV:"
-#			Carousel_Selector:
-#				id: oz_selector
-#				text: "oz:"
 			ScrollSelector:
 				id: abv_selector
 				text: "ABV:"
@@ -122,12 +116,23 @@
 <DrinkLabel>:
 	orientation: 'vertical'
 	size_hint_y: None
-	height: 100
+	height: 250
 	Label:
-		text_size: root.width, None
-		size: self.texture_size
-		halaign: 'center'
-		text: root.label_text
+		text: root.name
+	GridLayout:
+		cols: 3
+		Label:
+			text: "ABV"
+		Label:
+			text: "Oz."
+		Label:
+			text: "BAC"
+		Label:
+			text: root.abv
+		Label:
+			text: root.oz
+		Label:
+			text: root.bac
 	BoxLayout:
 		Button:
 			text: "edit"
@@ -135,6 +140,13 @@
 		Button:
 			text: "delete"
 			on_release: root.delete_drink()
+
+
+#	name = StringProperty("")
+#	abv = StringProperty("")
+#	oz = StringProperty("")
+#	date = StringProperty("")
+#	bac = StringProperty("")
 
 <DrinkEditor>:
 	name_box: name_box
