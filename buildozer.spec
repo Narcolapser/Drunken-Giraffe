@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = Drunken Giraffe
+title = Flight Night
 
 # (str) Package name
-package.name = drunkengiraffe
+package.name = flightnight
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = com.studiosleepgiraffe

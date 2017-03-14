@@ -29,7 +29,7 @@ import Model
 
 import time
 
-class DrunkenGiraffe(FloatLayout):
+class FlightNight(FloatLayout):
 	drinks = []
 	drinks_up = True
 	dirty_records = False
@@ -55,7 +55,7 @@ class DrunkenGiraffe(FloatLayout):
 
 	def __init__(self,data_dir,**kwargs):
 		self.data_dir = data_dir
-		super(DrunkenGiraffe,self).__init__(**kwargs)
+		super(FlightNight,self).__init__(**kwargs)
 
 	def addItem(self):
 		if self.last_drink == time.strftime("%H:%M:%S",time.localtime()):
@@ -258,14 +258,14 @@ class DrinkList(ScrollView):
 
 
 
-class DrunkenGiraffeApp(App):
+class FlightNightApp(App):
 	def build(self):
 		data_dir = getattr(self, 'user_data_dir')
 		print(data_dir)
-		self.DrunkenGiraffe = DrunkenGiraffe(data_dir)
-		Clock.schedule_interval(self.DrunkenGiraffe.update,1)
-		self.DrunkenGiraffe.load_last()
-		return self.DrunkenGiraffe
+		self.FlightNight = FlightNight(data_dir)
+		Clock.schedule_interval(self.FlightNight.update,1)
+		self.FlightNight.load_last()
+		return self.FlightNight
 
 	def on_pause(self):
 		return True
@@ -273,4 +273,4 @@ class DrunkenGiraffeApp(App):
 	def on_resume(self):
 		pass
 
-DrunkenGiraffeApp().run()
+FlightNightApp().run()
