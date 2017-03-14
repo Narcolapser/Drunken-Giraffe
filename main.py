@@ -23,6 +23,7 @@ from kivy.app import App
 from kivy.clock import Clock
 
 from Carousel_Selector import Carousel_Selector
+from scrollselector import ScrollSelector
 from Model import Drink
 import Model
 

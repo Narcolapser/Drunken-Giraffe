@@ -1,5 +1,6 @@
 #:kivy 1.9.1
 #:include Carousel_Selector.kv
+#:include scrollselector.kv
 #:import lv kivy.uix.listview
 #:import la kivy.adapters.listadapter
 
@@ -49,10 +50,16 @@
 				on_text: root.name_update()
 		BoxLayout:
 			size_hint_y: 0.2
-			Carousel_Selector:
+#			Carousel_Selector:
+#				id: abv_selector
+#				text: "ABV:"
+#			Carousel_Selector:
+#				id: oz_selector
+#				text: "oz:"
+			ScrollSelector:
 				id: abv_selector
 				text: "ABV:"
-			Carousel_Selector:
+			ScrollSelector:
 				id: oz_selector
 				text: "oz:"
 		Label:
