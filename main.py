@@ -56,6 +56,7 @@ class FlightNight(FloatLayout):
 	def __init__(self,data_dir,**kwargs):
 		self.data_dir = data_dir
 		super(FlightNight,self).__init__(**kwargs)
+		print("Constructed!")
 
 	def addItem(self):
 		if self.last_drink == time.strftime("%H:%M:%S",time.localtime()):
