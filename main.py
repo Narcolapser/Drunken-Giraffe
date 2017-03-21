@@ -25,6 +25,7 @@ from kivy.clock import Clock
 from Carousel_Selector import Carousel_Selector
 from scrollselector import ScrollSelector
 from Model import Drink
+from generator import getName
 import Model
 
 import time
@@ -39,7 +40,8 @@ class FlightNight(FloatLayout):
 	gender = StringProperty('Male')
 	mass_units = StringProperty('lb')
 	mass = NumericProperty(200)
-	dname = StringProperty("Sunny Honey Pale Ale!")
+#	dname = StringProperty("Sunny Honey Pale Ale!")
+	dname = StringProperty(getName())
 	
 	drink_list = ObjectProperty(None)
 	mass_ins = ObjectProperty(None)

@@ -4,6 +4,7 @@
 #:import lv kivy.uix.listview
 #:import la kivy.adapters.listadapter
 
+
 <FlightNight>:
 	mass_ins: mass_ins
 	abv_selector: abv_selector
@@ -85,14 +86,13 @@
 			height: 150
 			size_hint_y: None
 		BoxLayout:
+			orientation: 'vertical'
 			size_hint_y: None
-			height: 50
-			BoxLayout:
-				orientation: 'vertical'
-				Label:
-					text: 'Session started at:'
-				Label:
-					text: root.session_start_time_str
+			height: 150
+			Label:
+				text: 'Session started at:'
+			Label:
+				text: root.session_start_time_str
 			Button:
 				text: 'New Session'
 				on_release: root.start_new_session()
@@ -141,12 +141,6 @@
 			text: "delete"
 			on_release: root.delete_drink()
 
-
-#	name = StringProperty("")
-#	abv = StringProperty("")
-#	oz = StringProperty("")
-#	date = StringProperty("")
-#	bac = StringProperty("")
 
 <DrinkEditor>:
 	name_box: name_box

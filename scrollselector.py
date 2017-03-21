@@ -11,7 +11,7 @@ class ScrollSelector(BoxLayout):
 	val = NumericProperty(0.0)
 	sv = ObjectProperty(None)
 	
-	offset = 0.0025
+	offset = 0.000
 	
 	def __init__(self,**kwargs):
 		super(ScrollSelector,self).__init__(**kwargs)
