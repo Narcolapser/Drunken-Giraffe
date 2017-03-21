@@ -1,7 +1,7 @@
 import kivy
 kivy.require('1.9.1')
 from kivy.core.window import Window
-Window.softinput_mode = 'pan'
+Window.softinput_mode = 'below_target'
 
 from kivy.properties import ListProperty, StringProperty, NumericProperty, ObjectProperty
 from kivy.adapters.listadapter import ListAdapter
@@ -56,7 +56,6 @@ class FlightNight(FloatLayout):
 	def __init__(self,data_dir,**kwargs):
 		self.data_dir = data_dir
 		super(FlightNight,self).__init__(**kwargs)
-		print("Constructed!")
 
 	def addItem(self):
 		if self.last_drink == time.strftime("%H:%M:%S",time.localtime()):
