@@ -3,7 +3,11 @@ A app for helping homebrewers estimate their BAC.
 
 ## Purpose:
 
+<<<<<<< HEAD
 A homebrewer's helper. It estimates your blood alcohol based off of a couple of factors. But you specifically can enter the ABV of each drink as well as its size. This is useful for homebrewers where the ABV of the drinks can vary wildly. 
+=======
+A homebrewer’s helper. It estimates your blood alcohol based off of a couple of factors. But you specifically can enter the ABV of each drink as well as its size. This is useful for homebrewers where the ABV of the drinks can vary wildly. 
+>>>>>>> a78b02eced23d8dd8994ecf1a351af5609356ae3
 
 ## Post-mortem:
 
@@ -22,4 +26,8 @@ The algorithm for estimating your BAC requires your gender and body mass. So one
 
 The other feature is the drink list. This is where you can edit mistakes you made in entries, see what you have had so far, how much each drink is contributing to your BAC, and start a new drinking session. This list is populated automatically everytime you open the app with your previous session's information. So even if it's been months and your phone has died since you last opened, your session is safe. One thing that never got exposed but I had plans to was the record of your previous sessions. 
 
+<<<<<<< HEAD
 Code for this project can be found on [Github](https://github.com/Narcolapser/Flight-Night)
+=======
+Code for this project can be found on github: https://github.com/Narcolapser/Flight-Night
+>>>>>>> a78b02eced23d8dd8994ecf1a351af5609356ae3
